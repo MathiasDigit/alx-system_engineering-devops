@@ -1,2 +1,2 @@
 #!/bin/bash
-Alx so_cool
+a script that prints the absolute path name of the current working directory.
