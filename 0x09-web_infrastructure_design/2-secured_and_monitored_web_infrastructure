@@ -1,0 +1,89 @@
+Security & Monitoring Components Added:
+Firewalls (3 Total):
+Firewall 1: Protects the Load Balancer from external internet threats.
+
+Firewall 2 & 3: Protect Server 1 and Server 2 from unauthorized internal or external access.
+
+Purpose:
+Block malicious traffic and allow only trusted connections.
+
+Function:
+Filters network traffic based on predefined rules (IP, ports, protocols, etc.).
+
+SSL Certificate (HTTPS for www.foobar.com):
+Purpose:
+Encrypts the communication between the user’s browser and the server, protecting sensitive data.
+
+Location:
+Installed on the load balancer (SSL termination point).
+
+Monitoring Clients (3 Total):
+One installed on the Load Balancer
+
+One on Server 1
+
+One on Server 2
+
+Purpose:
+
+Detect system failures early
+
+Collect metrics for performance monitoring
+
+Generate alerts for abnormal behavior
+
+Tool Example:
+Sumo Logic, Prometheus, or Datadog
+
+How It Collects Data:
+
+Agents collect logs, metrics (CPU, memory, disk, network)
+
+Send data to a central dashboard in real-time or intervals
+
+Example - Monitor Web Server QPS (Queries Per Second):
+
+Use Nginx logs + monitoring agent
+
+Configure agent to track request rate from access logs
+
+Set up a dashboard & alerts when QPS exceeds a threshold
+
+🛠️ Why Each Component Was Added:
+Firewalls:
+Add layered security to prevent unauthorized or malicious access to each infrastructure component.
+
+SSL Certificate:
+Ensures encrypted, secure communication between clients and the system (prevents sniffing, MITM attacks).
+
+Monitoring Clients:
+Help detect issues proactively (e.g., crashes, overloads) and optimize performance.
+
+Third Server:
+Helps distribute the load better and adds extra redundancy in case of failure.
+
+⚠️ Issues Still Present:
+SSL Termination at Load Balancer:
+Problem:
+SSL is only active between the user and the load balancer. Internal traffic between load balancer and backend servers is unencrypted.
+
+Solution:
+Use end-to-end encryption by also installing SSL certificates on backend servers.
+
+Single MySQL Write Server:
+Problem:
+If the primary (master) MySQL server fails, no write operations can occur. Data updates become impossible.
+
+Solution:
+Use MySQL clustering or multi-master replication to allow multiple write nodes and automatic failover.
+
+Identical Server Components (Web + App + DB on each):
+Problem:
+Mixing roles on every server (web, app, DB) makes scaling, maintenance, and security harder.
+
+Example Issue:
+A crash in one component could affect all services on that server.
+
+Solution:
+Use role-based separation: dedicate servers for web, app, and DB roles for better scalability and fault isolation.
+

@@ -1,0 +1,65 @@
+Image link: https://imgur.com/P5Kqu2d
+
+Why We Added These Components:
+Load Balancer (HAProxy):
+Distributes incoming traffic between multiple servers to improve availability, performance, and fault tolerance.
+
+Server 2:
+Ensures redundancy. If Server 1 fails, Server 2 continues handling traffic to avoid downtime.
+
+Database Replica:
+Provides a copy of the data for read operations, reducing load on the primary and increasing performance.
+
+How It Works:
+-User types www.foobar.com
+-DNS resolves www.foobar.com to the Load Balancer IP (e.g., 8.8.8.8)
+-HAProxy receives the request
+-Using Round Robin, HAProxy alternates requests between Server 1 and Server 2
+-The selected server runs: Nginx → App Server → Database
+-The response goes back to the user through the same path
+
+Load Balancer Setup:
+Distribution Algorithm:
+Round Robin – sends each new request to the next server in line. Example: 1st request → Server 1, 2nd → Server 2, 3rd → Server 1, etc.
+
+Active-Active Setup:
+Both Server 1 and Server 2 are active and receive traffic simultaneously. This increases performance and availability.
+
+Active-Passive (difference):
+Only one server is active; the second takes over only if the first fails. Less efficient for performance.
+
+Database Primary-Replica (Master-Slave) Cluster:
+-Primary Node (Master):
+-Handles all write operations (INSERT, UPDATE, DELETE)
+-Can also serve read requests
+-It's the main source of truth
+
+Replica Node (Slave):
+-Handles only read operations (SELECT)
+-Automatically receives updates from the Primary
+-Cannot write directly
+
+How it works:
+Every time the Primary writes data, it is replicated to the Replica in near real-time.
+
+Issues with This Infrastructure:
+SPOF (Single Points of Failure):
+Load Balancer (HAProxy):
+If the load balancer fails, no traffic can reach the servers — the whole site goes offline.
+
+Database Primary Node:
+If the primary (master) database fails, no write operations are possible. Only read from replica works.
+
+Security Issues:
+No Firewall:
+All servers are directly exposed to the internet, increasing risk of unauthorized access or attacks (e.g., DDoS, brute force).
+
+No HTTPS:
+Data between users and server is sent in plain text. Vulnerable to eavesdropping, man-in-the-middle attacks.
+
+No Monitoring:
+No Health Checks or Alerts:
+If a server crashes, you won't know unless users complain.
+
+No Logs or Metrics:
+Hard to debug, measure performance, or detect abnormal behavior.

@@ -1,0 +1,32 @@
+Image link: https://imgur.com/a/jDlMZmI
+
+How it works step by step:
+User types www.foobar.com in the browser.
+
+The browser queries DNS to resolve www.foobar.com → 8.8.8.8.
+
+The browser sends an HTTP request to IP 8.8.8.8.
+
+Nginx (web server) on the server receives the request.
+
+Nginx forwards the request to the application server.
+
+The application server processes the request and queries the MySQL database if needed.
+
+The application server sends the response back to Nginx.
+
+Nginx sends the final HTML (or JSON/API response) to the user's browser.
+
+Element of this architecture
+Server: A computer that provides services or resources to other computers over a network.
+Domain name: Translates human-readable names (like foobar.com) into IP addresses.
+The www in www.foobar.com is a subdomain
+Web server: Receives HTTP requests, serves static files, and forwards requests to the application server.
+Application server: Runs the application code, handles logic, interacts with the database.
+Database: Stores, retrieves, and manages data for the application.
+
+Issues with this Infrastructure 
+SPOF (Single Point of Failure): since everything (web server, app server, database) runs on a single server, if that server crashes or goes offline, the entire website becomes unavailable. There’s no redundancy.
+Downtime during maintenance: when updating the code or restarting the web server (e.g., Nginx or the app server), the website is temporarily offline. This affects user experience and can cause issues during deployment.
+Lack of scalability: The server cannot handle a large number of simultaneous users. If traffic increases suddenly, the single server will become overloaded, slowing down or crashing the site. There's no load balancer or ability to scale horizontally.
+
