@@ -1,2 +1,2 @@
 #!/bin/bash
-printenv | grep HBTN=89
+printenv 
