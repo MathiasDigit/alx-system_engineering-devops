@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Alphabets
+wbase=water
+sbase=stir
+bbase=bestchol
+
+# Convertit un nombre donné en base personnalisée vers décimal
+to_decimal() {
+  local num=$1 base=$2
+  local len=${#base} val=0 digit
+  for ((i=0; i<${#num}; i++)); do
+    digit=${num:i:1}
+    pos=$(expr index "$base" "$digit")
+    ((pos--)) # expr index compte à partir de 1
+    val=$((val * len + pos))
+  done
+  echo $val
+}
+
+# Convertit un nombre décimal vers base personnalisée
+from_decimal() {
+  local num=$1 base=$2
+  local len=${#base} res=""
+  if ((num == 0)); then echo "${base:0:1}"; return; fi
+  while ((num > 0)); do
+    rem=$((num % len))
+    res="${base:rem:1}$res"
+    ((num /= len))
+  done
+  echo $res
+}
+
+# Récupérer les variables d’environnement
+wval=$(to_decimal "$WATER" "$wbase")
+sval=$(to_decimal "$STIR" "$sbase")
+
+# Somme en décimal
+sum=$((wval + sval))
+
+# Conversion finale
+result=$(from_decimal $sum "$bbase")
+
+echo "$result"
