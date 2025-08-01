@@ -1,0 +1,2 @@
+#!/bin/bash
+for i in {a..z}$'\n'do for j in {a..z}$'\n'do if [ $i$j != oo ]$'\n'then echo $i$j$'\n'fi$'\n'done$'\n'done
