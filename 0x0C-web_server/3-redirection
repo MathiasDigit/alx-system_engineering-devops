@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Installs nginx and configures a 301 redirect from /redirect_me to YouTube on Ubuntu 16.04
+
+# Update package lists
+apt-get update
+
+# Install nginx automatically
+apt-get install -y nginx
+
+# Create a Hello World page to confirm nginx is working
+echo "Hello World!" > /var/www/html/index.html
+
+# Add a 301 redirect for /redirect_me to YouTube
+# Insert the redirect configuration into the default server block
+sed -i '/listen 80 default_server/a \ \n    location /redirect_me {\n        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n    }' /etc/nginx/sites-available/default
+
+# Restart nginx using 'service'
+service nginx restart

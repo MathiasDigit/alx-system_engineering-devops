@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Installs nginx and configures a custom 404 page with "Ceci n'est pas une page" on Ubuntu 16.04
+
+# Update package lists
+apt-get update
+
+# Install nginx
+apt-get install -y nginx
+
+# Create a Hello World page for basic testing
+echo "Hello World!" > /var/www/html/index.html
+
+# Create the custom 404 page
+echo "Ceci n'est pas une page" > /var/www/html/custom_404.html
+
+# Configure nginx to use the custom 404 page
+# Replace the existing 'error_page 404' if any, or add it inside the server block
+sed -i '/listen 80 default_server/a \    error_page 404 /custom_404.html;' /etc/nginx/sites-available/default
+
+# Restart nginx
+service nginx restart
