@@ -1,0 +1,41 @@
+# /etc/ufw/before.rules
+
+*nat
+:PREROUTING ACCEPT [0:0]
+-A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
+COMMIT
+
+*filter
+:ufw-before-input - [0:0]
+:ufw-before-output - [0:0]
+:ufw-before-forward - [0:0]
+
+# Allow all on loopback
+-A ufw-before-input -i lo -j ACCEPT
+-A ufw-before-output -o lo -j ACCEPT
+
+# Drop invalid packets
+-A ufw-before-input -m conntrack --ctstate INVALID -j DROP
+
+# Allow established connections
+-A ufw-before-input -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A ufw-before-output -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# Allow SSH
+-A ufw-before-input -p tcp --dport 22 -j ACCEPT
+
+# Allow HTTP and HTTPS
+-A ufw-before-input -p tcp --dport 80 -j ACCEPT
+-A ufw-before-input -p tcp --dport 443 -j ACCEPT
+
+# Log denied calls
+-A ufw-before-input -j ufw-logging-deny
+-A ufw-before-output -j ufw-logging-deny
+-A ufw-before-forward -j ufw-logging-deny
+
+# Reject all other connections
+-A ufw-before-input -j REJECT
+-A ufw-before-output -j REJECT
+-A ufw-before-forward -j REJECT
+
+COMMIT
