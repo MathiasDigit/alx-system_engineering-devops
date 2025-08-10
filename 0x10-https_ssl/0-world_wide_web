@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2086
+
+domain=$1
+subdomain=$2
+
+get_subdomain_info() {
+    local full_domain=$1
+    result=$(dig $full_domain +short)
+    record_type="A"
+    destination=$(echo "$result" | head -n1)
+
+    if [[ -n "$destination" ]]; then
+        echo "The subdomain ${full_domain%%.*} is a $record_type record and points to $destination"
+    fi
+}
+
+if [[ -n "$domain" && -z "$subdomain" ]]; then
+    for sub in www lb-01 web-01 web-02
+    do
+        get_subdomain_info "$sub.$domain"
+    done
+
+elif [[ -n "$domain" && -n "$subdomain" ]]; then
+    get_subdomain_info "$subdomain.$domain"
+fi
