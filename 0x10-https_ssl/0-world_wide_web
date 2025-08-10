@@ -1,26 +1,31 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2086
+# A bash script that uses dig utility to display the DNS records of a domain
 
-domain=$1
-subdomain=$2
-
-get_subdomain_info() {
-    local full_domain=$1
-    result=$(dig $full_domain +short)
-    record_type="A"
-    destination=$(echo "$result" | head -n1)
-
-    if [[ -n "$destination" ]]; then
-        echo "The subdomain ${full_domain%%.*} is a $record_type record and points to $destination"
-    fi
+function display() {
+	www="www."
+	domain="$www$1"
+	ip=$(dig $domain | grep -A1 'ANSWER SECTION:' | awk '{if(NR==2) print $NF}')
+	echo "The subdomain www is a A record and points to $ip"
+	lb_01='lb-01.'
+	domain="$lb_01$1"
+	ip=$(dig $domain | grep -A1 'ANSWER SECTION:' | awk '{if(NR==2) print $NF}')
+	echo "The subdomain lb-01 is a A record and points to $ip"
+	web_01="web-01."
+	domain="$web_01$1"
+	ip=$(dig $domain | grep -A1 'ANSWER SECTION:' | awk '{if(NR==2) print $NF}')
+	echo "The subdomain web-01 is a A record and points to $ip"
+	web_02="web-02."
+	domain="$web_02$1"
+	ip=$(dig $domain | grep -A1 'ANSWER SECTION:' | awk '{if(NR==2) print $NF}')
+	echo "The subdomain web-02 is a A record and points to $ip"
 }
-
-if [[ -n "$domain" && -z "$subdomain" ]]; then
-    for sub in www lb-01 web-01 web-02
-    do
-        get_subdomain_info "$sub.$domain"
-    done
-
-elif [[ -n "$domain" && -n "$subdomain" ]]; then
-    get_subdomain_info "$subdomain.$domain"
+if [[ $# -eq 1 ]]
+then
+	display $1
+elif [[ $# -eq 2 ]]
+then
+	subdomain="$2."
+	fulldomain="$subdomain$1"
+	ip=$(dig $fulldomain | grep -A1 'ANSWER SECTION:' | tail -n 1 | awk '{print $NF}')
+	echo "The subdomain $2 is a A record and points to $ip"
 fi
